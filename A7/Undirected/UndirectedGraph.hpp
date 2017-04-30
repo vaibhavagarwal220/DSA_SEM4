@@ -112,11 +112,6 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
   }
 
 
-  void work(int& v)
-  {
-  	cout<<" "<<v<<" ";
-  }
-
   void UndirectedGraph::dfs(void (*work)(int&),int src)
   {
 

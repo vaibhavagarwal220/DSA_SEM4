@@ -75,10 +75,6 @@ private:AdjacencyMatrix graphm;
     repr=rep;
  }
 
- void work(int& i)
- {
-cout<<" "<<i<<" ";
- }
 
  void DirectedGraph::dfs(void (*work)(int&),int src)
  {

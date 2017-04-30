@@ -3,6 +3,11 @@
 #include <string>
 #include <fstream>
 
+void work(int& i)
+ {
+cout<<" "<<i<<" ";
+ }
+ 
 int main(int argc, char *argv[])
 {
 	int num=0,k;
