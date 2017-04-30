@@ -122,11 +122,9 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
 
     		int n=this->vertices();
   			Color col[n];
-  			bool is_in_queue[n];
   			for(int i=0;i<n;i++)
   			{
   				col[i]=WHITE;
-  				is_in_queue[i]=false;
   			}
   			
   			stack<int> s;
@@ -142,7 +140,7 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
 		  			 col[i]=GRAY;
 		 	 		if(repr=='m')
 		 	 		{
-			  			 for(int j=n-1;j>=0;j--)
+			  			 for(int j=0;j<n;j++)
 			  			 {
 			  			 	if(this->edgeExists(i,j) && col[j]==WHITE ) 
 			  			 	{
@@ -159,10 +157,10 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
 			  			while(tmp!=NULL)
 			  			{
 			  				int j=tmp->getdata();
-			  				if(col[j]==WHITE&&!is_in_queue[i])
+			  				if(col[j]==WHITE)
 			  				{
 			  					s.push(j);
-			  					is_in_queue[i]=true;
+
 
 			  				}
 			  				tmp=tmp->getlink();

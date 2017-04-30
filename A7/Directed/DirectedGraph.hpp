@@ -1,3 +1,28 @@
+
+
+/*
+
+0 0 1 1 0
+1 0 0 0 0
+0 1 0 0 0
+0 0 0 0 1
+1 0 0 0 0
+
+1 --- >   0 ----> 3 ---
+^       /  ^          |
+|      /   |          |
+|     /    |          |
+2 <--/     \ ---- 4 <--
+
+1 0
+0 2
+2 1
+1 0
+0 3
+4 0*/
+
+
+
 #ifndef DIRECTED_GRAPH
 #define DIRECTED_GRAPH 1
 #include "../stack.hpp"
@@ -60,11 +85,9 @@ cout<<" "<<i<<" ";
 
           int n=this->vertices();
         Color col[n];
-        bool is_in_queue[n];
         for(int i=0;i<n;i++)
         {
           col[i]=WHITE;
-          is_in_queue[i]=false;
         }
         
         stack<int> s;
@@ -80,12 +103,11 @@ cout<<" "<<i<<" ";
              col[i]=GRAY;
           if(repr=='m')
           {
-               for(int j=n-1;j>=0;j--)
+               for(int j=0;j<n;j++)
                {
                 if(this->edgeExists(i,j) && col[j]==WHITE ) 
                 {
                   s.push(j);
-                  //is_in_queue[i]=true;
                 }
                }
             }
@@ -96,15 +118,17 @@ cout<<" "<<i<<" ";
               listnode<int>* tmp=(graphl.AdjList()[i].getfirst());
               while(tmp!=NULL)
               {
+                
                 int j=tmp->getdata();
-                if(col[j]==WHITE&&!is_in_queue[i])
+
+                if(col[j]==WHITE)
                 {
                   s.push(j);
-                  is_in_queue[i]=true;
-
                 }
+
                 tmp=tmp->getlink();
               }
+              //s.print();
               
             }
 
