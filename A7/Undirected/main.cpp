@@ -110,7 +110,7 @@ if(argc==3)
                   if(t1<g.vertices())
                   {
                   cout<<"The BFS from vertex "<<t1<<" is as follows"<<endl;
-                  g.bfs(work,t1);
+                  g.bfs(&work,t1);
                   }cout<<endl;
                   break;
             case 8:cout<<"\nEnter Source Vertex : ";
@@ -120,7 +120,7 @@ if(argc==3)
                   {                  
                   cout<<"The DFS from vertex "<<t1<<" is as follows"<<endl;
                   LinearList<DFSNode> arr(g.vertices());
-                  arr=g.dfs(work,t1);
+                  arr=g.dfs(&work,t1);
                   cout<<endl;
 
                   LinearList< list<int> > predetree(g.vertices());
@@ -235,7 +235,7 @@ if(argc==3)
                   if(t1<g.vertices())
                   {
                   cout<<"The BFS from vertex "<<t1<<" is as follows"<<endl;
-                  g.bfs(work,t1);
+                  g.bfs(&work,t1);
                   }cout<<endl;
                   break;
             case 8:cout<<"\nEnter Source Vertex : ";
@@ -245,7 +245,7 @@ if(argc==3)
                   {                  
                   cout<<"The DFS from vertex "<<t1<<" is as follows"<<endl;
                   LinearList<DFSNode> arr(g.vertices());
-                  arr=g.dfs(work,t1);
+                  arr=g.dfs(&work,t1);
                   cout<<endl;
 
                   LinearList< list<int> > predetree(g.vertices());
