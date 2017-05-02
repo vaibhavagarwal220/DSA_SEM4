@@ -61,7 +61,7 @@ private:AdjacencyMatrix graphm;
 
   void print();
 
-  void dfs(void (*work)(int&),int src);
+  void dfs(void (*work)(int&));
 
   void bfs(void (*work)(int&),int src);
 };
@@ -76,86 +76,111 @@ private:AdjacencyMatrix graphm;
  }
 
 
- void DirectedGraph::dfs(void (*work)(int&),int src)
+ void DirectedGraph::dfs(void (*work)(int&))
  {
-
-          int n=this->vertices();
+int n=this->vertices();
         Color col[n];
+        int pred[n],time=0,dt[n],ft[n];
+
         for(int i=0;i<n;i++)
         {
           col[i]=WHITE;
+          pred[i]=-1;
         }
         
         stack<int> s;
-        s.push(src);
+        //s.push(src);
 
+        for(int k=0;k<n;k++)
+        {
+
+        if(col[k]==WHITE)
+        {
+          col[k]=GRAY;
+          time++;
+          dt[k]=time;
+          s.push(k);
+        }
 
         while(!s.empty())
         {
        int i=s.pop();
-         if(col[i]==WHITE) 
-          {
-             work(i);
-             col[i]=GRAY;
-          if(repr=='m')
-          {
-               for(int j=0;j<n;j++)
-               {
-                if(this->edgeExists(i,j) && col[j]==WHITE ) 
-                {
-                  s.push(j);
-                }
-               }
-            }
-            else
+       work(i);
+         if(pred[i]!=-1) cout<<"Discovery Time = "<<dt[i]<<" Predecessor "<<pred[i]<<" ";
+         else cout<<"Discovery Time = "<<dt[i]<<" Predecessor NIL "; 
+      if(repr=='m')
+      {
+           for(int j=0;j<n;j++)
+           {
+            if(this->edgeExists(i,j) && col[j]==WHITE ) 
             {
-              //cout<<(graphl.AdjList()[i].getfirst())->getdata()<<endl;
-
-              listnode<int>* tmp=(graphl.AdjList()[i].getfirst());
-              while(tmp!=NULL)
-              {
-                
-                int j=tmp->getdata();
-
-                if(col[j]==WHITE)
-                {
-                  s.push(j);
-                }
-
-                tmp=tmp->getlink();
-              }
-              //s.print();
-              
+              s.push(j);
+              col[j]=GRAY;
+              time++;
+              dt[j]=time;
+              pred[j]=i;
+              //is_in_queue[i]=true;
             }
+           }
+        }
+        else
+        {
+          //cout<<(graphl.AdjList()[i].getfirst())->getdata()<<endl;
 
-             col[i]=BLACK;
-          
+          listnode<int>* tmp=(graphl.AdjList()[i].getfirst());
+          while(tmp!=NULL)
+          {
+            int j=tmp->getdata();
+            if(col[j]==WHITE)
+            {
+              s.push(j);
+              col[j]=GRAY;
+              time++;
+              dt[j]=time;
+              pred[j]=i;
 
-          } 
-          
+
+            }
+            tmp=tmp->getlink();
           }
-          cout<<endl;
+          
+        }
 
- }
+         col[i]=BLACK;
+         time++;
+         ft[i]=time;
+         cout<<"Finishing Time = "<<ft[i]<<endl;
+          }
+
+        }
+
+  }
 
  void DirectedGraph::bfs(void (*work)(int&),int src)
  {
         int n=this->vertices();
         Color col[n];
+        int pred[n];
+        int d[n];
         for(int i=0;i<n;i++)
         {
           col[i]=WHITE;
+          pred[i]=-1;
+          d[i]=0;
+
         }
         
         queue<int> q;
         q.push(src);
         col[src]=GRAY;
         work(src);
+        cout<<"Distance from Source = "<<d[0]<<" Predecessor NIL";
+        cout<<endl;
 
         while(!q.empty())
         {
          int i=q.pop();
-         
+         col[i]=BLACK; 
     if(repr=='m')
       {
           for(int j=0;j<n;j++)
@@ -164,7 +189,12 @@ private:AdjacencyMatrix graphm;
             {
               q.push(j);
               col[j]=GRAY;
-              work(j);
+              
+              d[j]=d[i]+1;
+              pred[j]=i;
+            work(j);
+            cout<<"Distance from Source = "<<d[j]<<" Predecessor "<<pred[j];
+            cout<<endl;
             }
           }
         }
@@ -178,14 +208,16 @@ private:AdjacencyMatrix graphm;
                 {
                   q.push(j);
                   col[j]=GRAY;
+                  d[j]=d[i]+1;
+                  pred[j]=i;
                   work(j);
-                  //is_in_queue[i]=true;
-
+                  cout<<"Distance from Source = "<<d[j]<<" Predecessor "<<pred[j];
+                  cout<<endl;
                 }
                 tmp=tmp->getlink();
               }
         }
-         col[i]=BLACK;
+         
         
         } 
     cout<<endl; 

@@ -113,14 +113,10 @@ if(argc==3)
                   g.bfs(work,t1);
                   }cout<<endl;
                   break;
-            case 8:cout<<"\nEnter Source Vertex : ";
-                  cin>>t1;
-                  
-                  if(t1<g.vertices())
-                  {
-                  cout<<"The DFS from vertex "<<t1<<" is as follows"<<endl;
-                  g.dfs(work,t1);
-                  }
+            case 8:cout<<"\n";
+                  cout<<"The DFS of the given graph is as follows"<<endl;
+                  g.dfs(work);
+
 
                   cout<<endl;
                   break;
@@ -224,15 +220,9 @@ if(argc==3)
                   g.bfs(work,t1);
                   }cout<<endl;
                   break;
-            case 8:cout<<"\nEnter Source Vertex : ";
-                  cin>>t1;
-                  
-                  if(t1<g.vertices())
-                  {
-                  cout<<"The DFS from vertex "<<t1<<" is as follows"<<endl;
-                  g.dfs(work,t1);
-                  }
-
+            case 8:cout<<"\n";
+                  cout<<"The DFS of the given graph is as follows"<<endl;
+                  g.dfs(work);
                   cout<<endl;
                   break;
             case 9:cout<<"\nEnter Vertex : ";
