@@ -4,6 +4,22 @@
  * An interface to represent any type of Graph
  */
 enum Color{WHITE,GRAY,BLACK};
+
+class BFSNode 
+{
+  public:Color col;
+          int pred;
+          int d;
+};
+
+class DFSNode 
+{
+  public:Color col;
+          int pred;
+          int dt;
+          int ft;
+ };
+
 class AbstractGraph {
  public:
   /* Destructor:
@@ -40,12 +56,12 @@ class AbstractGraph {
    * Does a depth first traversal of the entire graph.
    * Runs the given function work, with the value of each vertex.
    */
-  virtual void dfs(void (*work)(int&)) = 0;
+  virtual LinearList<DFSNode> dfs(void (*work)(int&),int src) = 0;
   /*
    * Function bfs:
    * Does a breadth first traversal of the entire graph.
    * Runs the given function work, with the value of each vertex.
    */
-  virtual void bfs(void (*work)(int&),int src) = 0;
+  virtual LinearList<BFSNode> bfs(void (*work)(int&),int src) = 0;
 };
 #endif /* ifndef ABSTRACT_GRAPH */

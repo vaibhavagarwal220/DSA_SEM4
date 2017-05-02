@@ -13,11 +13,13 @@
 #include "../AbstractGraph.hpp"
 
 
+
 class UndirectedGraph : AbstractGraph {
 
   private:AdjacencyMatrix graphm;
         AdjacencyList graphl;
         char repr;
+        int num_edges;
 
  public:
   /*
@@ -42,9 +44,9 @@ class UndirectedGraph : AbstractGraph {
 
   void remove(int i, int j);
 
-  void dfs(void (*work)(int&));
+  LinearList<DFSNode> dfs(void (*work)(int&),int src);
 
-  void bfs(void (*work)(int&),int src);
+  LinearList<BFSNode> bfs(void (*work)(int&),int src);
 
   int degree(int i);
 
@@ -62,6 +64,7 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
     else if(mode=='l') graphl.resAdjacencyList(vertices);
 
     repr=mode;
+    num_edges=0;
 
 }
 
@@ -73,8 +76,9 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
 
   int UndirectedGraph::edges()
   {
-    if(repr=='m') return graphm.edges()/2;
-    else return graphl.edges()/2;
+    //if(repr=='m') return graphm.edges()/2;
+    //else return graphl.edges()/2;
+    return num_edges;
   } 
 
   int UndirectedGraph::vertices()
@@ -85,6 +89,7 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
 
   void UndirectedGraph::add(int i, int j)
   {
+    if(!this->edgeExists(i,j)) num_edges++;
     if(repr=='m') 
     {
       graphm.add(i,j);
@@ -95,10 +100,12 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
         graphl.add(i,j);
         graphl.add(j,i);
       }
+      
   }
 
   void UndirectedGraph::remove(int i, int j)
   {
+    if(this->edgeExists(i,j)) num_edges--;
     if(repr=='m') 
       {
         graphm.remove(i,j);
@@ -109,130 +116,182 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
       graphl.remove(i,j);
       graphl.remove(i,j);
     }
+    
   }
 
 
-  void UndirectedGraph::dfs(void (*work)(int&))
+  LinearList<DFSNode> UndirectedGraph::dfs(void (*work)(int&),int src)
   {
 
-    		int n=this->vertices();
-  			Color col[n];
-  			int pred[n],time=0,dt[n],ft[n];
+    		int n=this->vertices(),time=0;
+  			LinearList<DFSNode> tree(n);
 
   			for(int i=0;i<n;i++)
   			{
-  				col[i]=WHITE;
-  				pred[i]=-1;
+  				tree[i].col=WHITE;
+  				tree[i].pred=-1;
   			}
   			
   			stack<int> s;
-  			//s.push(src);
+        s.push(src);
+       
+          while(!s.empty())
+          {
+             int i=s.top();
+             if(tree[i].col==BLACK)
+             {
+              s.pop();
+             }
+             else if(tree[i].col==GRAY)
+             {
+              s.pop();
+              tree[i].col=BLACK;
+              time++;
+              tree[i].ft=time;
+             }
+             else if(tree[i].col==WHITE)
+             {
+                 tree[i].col=GRAY;
+                 work(i);
+                 time++;
+                 tree[i].dt=time;
+               
+                  if(repr=='m')
+                  {
+                       for(int j=0;j<n;j++)
+                       {
+                        if(this->edgeExists(i,j) && tree[j].col==WHITE ) 
+                        {
+                          s.push(j);
+                          tree[j].pred=i;
+                        }
+                       }
+                  }
+                  else
+                    {
+                      listnode<int>* tmp=(graphl.AdjList()[i].getfirst());
+                      while(tmp!=NULL)
+                      {
+                        int j=tmp->getdata();
+                        if(tree[j].col==WHITE)
+                        {
+                          s.push(j);
+                          tree[j].pred=i;
+                        }
+                        tmp=tmp->getlink();
+                      }
+                      
+                    }
+              }
+            }
 
-  			for(int k=0;k<n;k++)
-  			{
+        			for(int k=0;k<n;k++)
+        			{
 
-  			if(col[k]==WHITE)
-  			{
-  				col[k]=GRAY;
-  				time++;
-  				dt[k]=time;
-  				s.push(k);
-  			}
+        			if(tree[k].col==WHITE)
+        			{
+        				s.push(k);
+        			}
 
-  			while(!s.empty())
-  			{
- 			 int i=s.pop();
- 			 work(i);
-		  	 if(pred[i]!=-1) cout<<"Discovery Time = "<<dt[i]<<" Predecessor "<<pred[i]<<" ";
-  			 else cout<<"Discovery Time = "<<dt[i]<<" Predecessor NIL "; 
- 	 		if(repr=='m')
- 	 		{
-	  			 for(int j=0;j<n;j++)
-	  			 {
-	  			 	if(this->edgeExists(i,j) && col[j]==WHITE ) 
-	  			 	{
-	  			 		s.push(j);
-	  			 		col[j]=GRAY;
-	  			 		time++;
-	  			 		dt[j]=time;
-	  			 		pred[j]=i;
-	  			 		//is_in_queue[i]=true;
-	  			 	}
-	  			 }
-  			}
-  			else
-  			{
-  				//cout<<(graphl.AdjList()[i].getfirst())->getdata()<<endl;
+        	   while(!s.empty())
+        	   {
+       			 int i=s.top();
+       			
+                if(tree[i].col==BLACK) s.pop();
+                
+                else if(tree[i].col==GRAY)
+                {
+                s.pop();
+                tree[i].col=BLACK;
+                time++;
+                tree[i].ft=time;
+                  }
+                
+                else if(tree[i].col==WHITE)
+                {
+                    work(i);
+                    tree[i].col=GRAY;
+                    time++;
+                    tree[i].dt=time;
+       
+       
+             	 		if(repr=='m')
+             	 		{
+            	  			 for(int j=0;j<n;j++)
+            	  			 {
+            	  			 	if(this->edgeExists(i,j) && tree[j].col==WHITE ) 
+            	  			 	{
+            	  			 		s.push(j);
+            	  			 		tree[j].pred=i;
+            	  			 	}
+            	  			 }
+              			}
+              			else
+              			{
+            	  			listnode<int>* tmp=(graphl.AdjList()[i].getfirst());
+            	  			while(tmp!=NULL)
+            	  			{
+            	  				int j=tmp->getdata();
+            	  				if(tree[j].col==WHITE)
+            	  				{
+            	  					s.push(j);
+            	  			 		tree[j].pred=i;
+           	  				}
+            	  				tmp=tmp->getlink();
+            	  			}
+              				
+              			}
 
-	  			listnode<int>* tmp=(graphl.AdjList()[i].getfirst());
-	  			while(tmp!=NULL)
-	  			{
-	  				int j=tmp->getdata();
-	  				if(col[j]==WHITE)
-	  				{
-	  					s.push(j);
-	  					col[j]=GRAY;
-	  			 		time++;
-	  			 		dt[j]=time;
-	  			 		pred[j]=i;
 
+        			 }//cout<<"Finishing Time = "<<tree[i].ft<<endl;
+        		}
 
-	  				}
-	  				tmp=tmp->getlink();
-	  			}
-  				
-  			}
-
-  			 col[i]=BLACK;
-  			 time++;
-  			 ft[i]=time;
-  			 cout<<"Finishing Time = "<<ft[i]<<endl;
-  		  	}
-
-  			}
-  			
+        	     }
+        			
+              return tree;
   }
 
-  void UndirectedGraph::bfs(void (*work)(int&),int src)
+  LinearList<BFSNode> UndirectedGraph::bfs(void (*work)(int&),int src)
   {
 
   			int n=this->vertices();
-  			Color col[n];
-  			int pred[n];
-  			int d[n];
+  			//Color col[n];
+  			//int pred[n];
+  			//int d[n];
+        LinearList<BFSNode> tree(n);
   			for(int i=0;i<n;i++)
   			{
-  				col[i]=WHITE;
-  				pred[i]=-1;
-  				d[i]=0;
+  				tree[i].col=WHITE;
+  				tree[i].pred=-1;
+  				tree[i].d=0;
 
   			}
   			
   			queue<int> q;
   			q.push(src);
-  			col[src]=GRAY;
+  			tree[src].col=GRAY;
   			work(src);
-  			cout<<"Distance from Source = "<<d[0]<<" Predecessor NIL";
-  			cout<<endl;
+  			//cout<<"Distance from Source = "<<tree[0].d<<" Predecessor NIL";
+  			//cout<<endl;
 
   			while(!q.empty())
   			{
   			 int i=q.pop();
-  			 col[i]=BLACK; 
+  			 tree[i].col=BLACK; 
 		if(repr=='m')
 			{
 	  			for(int j=0;j<n;j++)
 	  			{
-	  			 	if(this->edgeExists(i,j) && col[j]==WHITE) 
+	  			 	if(this->edgeExists(i,j) && tree[j].col==WHITE) 
 	  			 	{
 	  			 		q.push(j);
-	  			 		col[j]=GRAY;
+	  			 		tree[j].col=GRAY;
 	  			 		
-	  			 		d[j]=d[i]+1;
-	  					pred[j]=i;
+	  			 		tree[j].d=tree[i].d+1;
+	  					tree[j].pred=i;
 		 				work(j);
-		 				cout<<"Distance from Source = "<<d[j]<<" Predecessor "<<pred[j];
-		 				cout<<endl;
+		 				//cout<<"Distance from Source = "<<tree[j].d<<" Predecessor "<<tree[j].pred;
+		 				//cout<<endl;
 	  			 	}
 	  			}
   			}
@@ -242,15 +301,15 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
 			  			while(tmp!=NULL)
 			  			{
 			  				int j=tmp->getdata();
-			  				if(col[j]==WHITE)
+			  				if(tree[j].col==WHITE)
 			  				{
 			  					q.push(j);
-			  					col[j]=GRAY;
-			  					d[j]=d[i]+1;
-			  					pred[j]=i;
+			  					tree[j].col=GRAY;
+			  					tree[j].d=tree[i].d+1;
+			  					tree[j].pred=i;
 	  			 				work(j);
-	  			 				cout<<"Distance from Source = "<<d[j]<<" Predecessor "<<pred[j];
-	  			 				cout<<endl;
+	  			 				//cout<<"Distance from Source = "<<tree[j].d<<" Predecessor "<<tree[j].pred;
+	  			 				//cout<<endl;
 			  				}
 			  				tmp=tmp->getlink();
 			  			}
@@ -258,7 +317,8 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
   			 
   			
   			}	
-  	cout<<endl;		
+  	//cout<<endl;		
+        return tree;
   }
 
   int UndirectedGraph::degree(int i)

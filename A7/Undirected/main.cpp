@@ -113,12 +113,30 @@ if(argc==3)
                   g.bfs(work,t1);
                   }cout<<endl;
                   break;
-            case 8:cout<<"\n";
-                  cout<<"The DFS of the given graph is as follows"<<endl;
-                  g.dfs(work);
-
-
+            case 8:cout<<"\nEnter Source Vertex : ";
+                  
+                  cin>>t1;
+                  if(t1<g.vertices())
+                  {                  
+                  cout<<"The DFS from vertex "<<t1<<" is as follows"<<endl;
+                  LinearList<DFSNode> arr(g.vertices());
+                  arr=g.dfs(work,t1);
                   cout<<endl;
+
+                  LinearList< list<int> > predetree(g.vertices());
+                    for(int i=0;i<g.vertices();i++)
+                    {
+                      if(arr[i].pred!=-1) predetree[arr[i].pred].append(i);
+                    }
+                  cout<<endl;
+                  for(int i=0;i<g.vertices();i++)
+                    {
+                      cout<<i<<" : ";
+                      predetree[i].print();
+                      cout<<endl;
+                    }
+                  }
+
                   break;
             case 9:cout<<"\nEnter Vertex : ";
                   cin>>t1;
@@ -220,9 +238,29 @@ if(argc==3)
                   g.bfs(work,t1);
                   }cout<<endl;
                   break;
-            case 8:cout<<"\n";
-                  cout<<"The DFS of the given graph is as follows"<<endl;
-                  g.dfs(work);
+            case 8:cout<<"\nEnter Source Vertex : ";
+                  
+                  cin>>t1;
+                  if(t1<g.vertices())
+                  {                  
+                  cout<<"The DFS from vertex "<<t1<<" is as follows"<<endl;
+                  LinearList<DFSNode> arr(g.vertices());
+                  arr=g.dfs(work,t1);
+                  cout<<endl;
+
+                  LinearList< list<int> > predetree(g.vertices());
+                    for(int i=0;i<g.vertices();i++)
+                    {
+                      if(arr[i].pred!=-1) predetree[arr[i].pred].append(i);
+                    }
+                  cout<<endl;
+                  for(int i=0;i<g.vertices();i++)
+                    {
+                      cout<<i<<" : ";
+                      predetree[i].print();
+                      cout<<endl;
+                    }
+                  }
                   cout<<endl;
                   break;
             case 9:cout<<"\nEnter Vertex : ";
