@@ -24,115 +24,106 @@ class UFDS {
     public:
       int parent;
       int rank;
-      int size;
+    //  int size;
   };
 
-  LinearList<node> vertex;
-  int num_dis_sets;
+  node vertex[100000];
+  int set_size[100000];
+  int size_;
+
+
+  //int num_dis_sets;
 
   public:
     // Create an empty union find data structure with N isolated sets.
-    UFDS(const unsigned int& N);
+    UFDS(int N);
 
     // Default constructor
     ~UFDS();
 
     // Make a new set with N vertices with all sets being disjoint
-    void make_set (const unsigned int& N);
+    void make_set (int N);
 
     // Return the representative / parent of set consisting of object x.
-    int find_set (const unsigned int& x);
+    int find_set (int x);
     
     // Unite sets containing objects x and y.
-    void union_set (const unsigned int& x, const unsigned int& y);
+    void union_set (int x, int y);
 
-    void link (const unsigned int& x, const unsigned int& y);
+    void link (int x, int y);
     
     // Are objects x and y in the same set?
-    bool is_same_set (const unsigned int& x, const unsigned int& y);
+    bool is_same_set (int x, int y);
 
     // Return the number of disjoint sets.
     int num_disjoint_sets();
     
     // Return the size of the set containing object x.
-    int size_set (const unsigned int& x); 
+    int size_set (int x); 
   };    
 
-    UFDS::UFDS(const unsigned int& N)
-    {
-    	vertex.resize(N);
-    	num_dis_sets=N;
+    UFDS :: UFDS(int N)
+{
+	//this->vertex.resize(N);
+	this->size_ = N;
+	//set_size.resize(N);
+}
 
-    }
+UFDS :: ~UFDS()
+{
 
-    // Default constructor
-    UFDS::~UFDS()
-    {
+}
 
-    }
+void UFDS :: make_set( int N)
+{
+	this->vertex[N].parent = N;
+	this->vertex[N].rank = 0;
+	set_size[N] = 1;
+}
 
-    // Make a new set with N vertices with all sets being disjoint
-    void UFDS::make_set (const unsigned int& N)
-    {
-    	vertex[N].parent=N;
-    	vertex[N].rank=0;
-    	vertex[N].size=1;
+int UFDS :: find_set( int x)
+{
+	if(x != this->vertex[x].parent)
+		this->vertex[x].parent = find_set(this->vertex[x].parent);
+	return this->vertex[x].parent;
+}
 
+void UFDS :: union_set( int x, int y)
+{
+	if(is_same_set(x,y) == false)
+		this->size_--;
+	this->link(this->find_set(x),this->find_set(y));
+}
 
-    }
-
-    // Return the representative / parent of set consisting of object x.
-    int UFDS::find_set (const unsigned int& x)
-    {
-    if (x != vertex[x].parent) 	
-    {
-		    vertex[x].parent = find_set(vertex[x].parent);
+void UFDS :: link( int x, int y)
+{
+	if(this->vertex[x].rank > this->vertex[y].rank)
+	{
+		this->vertex[y].parent = x;
+		this->set_size[x]++;
 	}
- 	return (vertex[x].parent);
+	else
+	{
+		this->set_size[y]++;
+		this->vertex[x].parent = y;
+		if(this->vertex[x].rank == this->vertex[y].rank)
+			this->vertex[y].rank ++;
+	}
+}
 
-    }
-    
-    // Unite sets containing objects x and y.
-    void UFDS::union_set (const unsigned int& x, const unsigned int& y)
-    {
-    	
-    	link(find_set(x), find_set(y));
-    	num_dis_sets--;
-    }
-    
-    void UFDS::link (const unsigned int& x, const unsigned int& y){
-    	if (vertex[x].rank > vertex[y].rank)
-			{
-				vertex[y].parent = x;
-			(vertex[x].size)++;	
-			}
-		else 
-		{
-			vertex[x].parent = y;
-			if (vertex[x].rank == vertex[y].rank)
-				vertex[y].rank = vertex[y].rank+1;
+bool UFDS :: is_same_set( int x, int y)
+{
+	return (this->find_set(x) == this->find_set(y));
+}
 
-			(vertex[y].size)++;
-		}
+int UFDS :: num_disjoint_sets()
+{
+	return this->size_;
+}
 
-
-    }
-    // Are objects x and y in the same set?
-    bool UFDS::is_same_set (const unsigned int& x, const unsigned int& y)
-    {
-	    return (find_set(x)==find_set(y));	
-    }
-
-    // Return the number of disjoint sets.
-    int UFDS::num_disjoint_sets()
-    {
-    	return num_dis_sets;
-    }
-
-    // Return the size of the set containing object x.
-    int UFDS::size_set (const unsigned int& x) 
-    {
-    	return vertex[(find_set(x))].size;
-    }
+int UFDS :: size_set( int x)
+{
+	return this->set_size[find_set(x)];
+}
 
 #endif  /* UFDS_ */

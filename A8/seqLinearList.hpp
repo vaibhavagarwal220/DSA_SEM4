@@ -12,7 +12,7 @@ class LinearList{
 	LinearList(const int& MaxListSize);
 	LinearList(const int& isize, const T& ival);
 	~LinearList();
-	void push_back(const T& item);
+	void push_back(T item);
 	bool empty();
 	unsigned int size();
 	unsigned int capacity();
@@ -22,7 +22,7 @@ class LinearList{
 	void print();
 	void erase(const T&  item);
 	void erase_pos(const int&  k);
-	void  insert(const int& k, T& x);
+	void  insert(const int& k, T x);
 	inline T& at(const int& k);
 	inline T& operator[](const int& i);		
 
@@ -70,7 +70,7 @@ class LinearList{
 		} 
 		
 		template<class T>
-		void LinearList<T>::push_back(const T& item)
+		void LinearList<T>::push_back(T item)
 		{
 			insert(size_,item);
 		}   
@@ -171,7 +171,7 @@ class LinearList{
 		}
 
 		template<class T>
-		void LinearList<T>::insert(const int& k, T& x)
+		void LinearList<T>::insert(const int& k, T x)
 		{
 			if(size_==0) 
 			{

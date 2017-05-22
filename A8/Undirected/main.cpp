@@ -11,6 +11,7 @@ cout<<" "<<i<<" ";
 int main(int argc, char *argv[])
 {
   int num=0,k,w;
+   
 if(argc==3) 
 {
   string fname=argv[1];
@@ -60,8 +61,10 @@ if(argc==3)
           cout<<"6. Remove edge between given vertices"<<endl;
           cout<<"7. BFS from a given vertex"<<endl;
           cout<<"8. DFS from a given vertex"<<endl;
-          cout<<"9. InDegree of a given vertex"<<endl;
-          cout<<"10. Exit"<<endl<<"UndirectedGraph << ";
+          cout<<"9. Degree of a given vertex"<<endl;
+          cout<<"10. Prims MST"<<endl;
+          cout<<"11. Kruskal MST"<<endl;
+          cout<<"12. Exit"<<endl<<"UndirectedGraph << ";
 
           cin>>c;
 
@@ -150,8 +153,14 @@ if(argc==3)
                   if(t1<g.vertices())
                   cout<<"\nThe Degree of vertex "<<t1<<" is "<<g.degree(t1)<<" ."<<endl<<endl;
                   break;
+            case 10:g.prim();
+                    g.printMST();
+                  break;                  
+            case 11: g.kruskal();
+                     g.printMST();
+                  break;
 
-            case 10:return 0;
+            case 12:return 0;
 
             default:cout<<"\nInvalid Choice\n"<<endl;
                   break;
@@ -194,7 +203,9 @@ if(argc==3)
           cout<<"7. BFS from a given vertex"<<endl;
           cout<<"8. DFS from a given vertex"<<endl;
           cout<<"9. Degree of a given vertex"<<endl;
-          cout<<"10. Exit"<<endl<<"UndirectedGraph << ";
+          cout<<"10. Prims MST"<<endl;
+          cout<<"11. Kruskal MST"<<endl;
+          cout<<"12. Exit"<<endl<<"UndirectedGraph << ";
 
           cin>>c;
 
@@ -285,10 +296,15 @@ if(argc==3)
                   if(t1<g.vertices())
                   cout<<"\nThe Degree of vertex "<<t1<<" is "<<g.degree(t1)<<" ."<<endl<<endl;
                   break;
+            case 10:g.prim();
+                    g.printMST();
+                    break;                  
+            case 11:g.kruskal();
+                    g.printMST();
+                    break;
 
 
-
-            case 10:return 0;
+            case 12:return 0;
 
             default:cout<<"\nInvalid Choice\n"<<endl;
                   break;

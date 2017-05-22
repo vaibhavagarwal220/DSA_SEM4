@@ -12,8 +12,49 @@
 
 #include "../AbstractGraph.hpp"
 
+#include <limits.h>
 
+#include "../MinPriorityQueue.hpp"
 
+#include "../UFDS.hpp"
+
+class vertex{
+
+  public:
+    int v;
+    int val;
+
+  vertex()
+  {
+
+  }
+  vertex (int v,int val)
+  {
+  	this->v=v;
+  	this->val=val;
+  }
+
+  bool operator < (vertex rhs)
+  {
+    return this->val < rhs.val;
+  }
+  bool operator > (vertex rhs)
+  {
+    return this->val > rhs.val;
+  }
+
+  bool operator == (vertex rhs)
+  {
+    return (this->val == rhs.val) && (this->v == rhs.v);
+  }   
+  void operator = (vertex rhs)
+  {
+    
+    this->v = rhs.v;
+    this->val = rhs.val;
+  }
+
+  };
 
 
 class edge{
@@ -28,19 +69,33 @@ class edge{
 
   }
 
-  inline int viewEdge()
+  edge(int src,int dest,int weight)
   {
-    cout<<"\n Source : "<<this->src<<"  Destination : "<<this->dest<<"  Weight : "<<this->weight<<endl;
+  	this->src = src;
+    this->dest = dest;
+    this->weight = weight;
   }
 
-  inline bool operator < (edge rhs)
+  bool operator < (edge rhs)
   {
     return this->weight < rhs.weight;
   }
-  inline bool operator > (edge rhs)
+  bool operator > (edge rhs)
   {
     return this->weight > rhs.weight;
+  }
+
+  bool operator == (edge rhs)
+  {
+    return (this->weight == rhs.weight) && (this->src == rhs.src) && (this->dest == rhs.dest);
   }   
+  void operator = (edge rhs)
+  {
+    
+    this->src = rhs.src;
+    this->dest = rhs.dest;
+    this->weight = rhs.weight;
+  }
 
   };
 
@@ -51,6 +106,7 @@ class UndirectedGraph : AbstractGraph {
 
   private:AdjacencyMatrix graphm;
         AdjacencyList graphl;
+        edge* mst;
         char repr;
         int num_edges;
 
@@ -64,6 +120,8 @@ class UndirectedGraph : AbstractGraph {
    * 'l' for AdjacencyList
    */
   UndirectedGraph(int vertices, char mode);
+
+
 
   bool edgeExists(int i, int j);
 
@@ -83,9 +141,123 @@ class UndirectedGraph : AbstractGraph {
 
   int degree(int i);
 
-  //int indegree(int i){}
+   void printMST()
+  {
+  	cout<<"Source\t Destination\tWeight"<<endl;
+  	for(int i=0;i<graphl.vertices()-1;i++)
+                    {
+                    cout<<"  "<<mst[i].src<<"\t\t"<<mst[i].dest<<"\t  "<<mst[i].weight<<endl;
+                    }
+  
+                   
+  }
 
-  //int outdegree(int i){}
+  edge* kruskal()
+  {
+      MinPriorityQueue<edge> qedges;
+
+      int n=graphl.vertices(),i;
+
+      
+      UFDS dset(n);
+
+            for(int i=0;i<n;i++)
+          {
+              dset.make_set(i);
+          }
+			i=0;
+
+      edge e;
+      for(int i=0;i<n;i++)
+          {
+              listnode<pair<int,int> > *tmp=(graphl.AdjList())[i].init;
+              while ( tmp!= NULL )        
+              {   
+                  e.src=i;
+                  e.dest=(tmp->getdata()).first;
+                  e.weight=(tmp->getdata()).second;
+                  qedges.insert(e);
+                  tmp = tmp->getlink();
+              }
+
+          }
+
+
+
+    while(!qedges.empty())
+    {
+        e=qedges.extract_min();
+        if(dset.find_set(e.src)!=dset.find_set(e.dest))
+        {
+            
+            dset.union_set(e.src,e.dest);
+            (this->mst)[i++]=e;
+        }
+  
+    }
+return mst;
+
+  }
+
+  edge* prim()
+  {
+	   int n=graphl.vertices();
+	   MinPriorityQueue<vertex> heap;
+	   int i,u,key[n],parent[n],weight[n];
+	   bool inheap[n];
+	   vertex ve;
+	   for(i=0;i<n;i++)
+	   {
+	   	inheap[i]=true;
+	   	parent[i]=-1;
+	   	weight[i]=INT_MAX;
+	   	key[i]=INT_MAX;
+	   	vertex vert(i,INT_MAX);
+	   	heap.insert(vert);
+	   } 
+	   vertex ver(0,0);
+	   key[0]=0;
+//	   heap.heap_decrease_key(0,ver);
+	   while(!heap.empty())
+	   {
+	   	ve=heap.extract_min();
+	//   	cout<<ve.v<<" : ";
+	   	inheap[ve.v]=false;
+
+		listnode<pair<int,int> >* tmp=(graphl.AdjList()[ve.v].getfirst());
+		while(tmp!=NULL)
+			{
+			int j=(tmp->getdata()).first;
+		
+			vertex ver(j,(tmp->getdata()).second);
+		    if((tmp->getdata()).second < key[j] && inheap[j]) 
+		    {
+		    	//cout<<j<<" ("<<(tmp->getdata()).second<<") ";
+		    	key[j]=(tmp->getdata()).second;
+		    	heap.heap_decrease_key(j,ver);
+
+		    	parent[j]=ve.v;
+		    	weight[j]=(tmp->getdata()).second;
+
+		    }
+
+			tmp=tmp->getlink();
+			}
+//		   cout<<endl;
+
+	   }
+
+	   i=0;
+	   for(i=1;i<n;i++)
+	   {
+	   	edge e(i,parent[i],weight[i]);
+	   	this->mst[i-1]=e;
+	   }
+
+  return mst;
+
+  }
+
 
 };
 
@@ -96,6 +268,7 @@ UndirectedGraph::UndirectedGraph(int vertices, char mode)
 
     else if(mode=='l') graphl.resAdjacencyList(vertices);
 
+    mst=new edge[vertices];
     repr=mode;
     num_edges=0;
 

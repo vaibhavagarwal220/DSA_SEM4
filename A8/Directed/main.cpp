@@ -10,13 +10,14 @@ cout<<" "<<i<<" ";
  
 int main(int argc, char *argv[])
 {
-	int num=0,k,w;
+  int num=0,k,w;
+   
 if(argc==3) 
 {
-	string fname=argv[1];
-	char mode=argv[2][0];
-	//cout<<fname
-	string line;
+  string fname=argv[1];
+  char mode=argv[2][0];
+  //cout<<fname
+  string line;
     ifstream myfile;
     myfile.open(fname.c_str());
 
@@ -36,12 +37,12 @@ if(argc==3)
 
         for(int i=0;i<num;i++)
         {
-          	for(int j=0;j<num;j++)
-          	{
-          		myfile>>k;
-          		if(k) g.add(i,j,k);
-          	}
-          	//cout<<endl;	
+            for(int j=0;j<num;j++)
+            {
+              myfile>>k;
+              if(k) g.add(i,j,k);
+            }
+            //cout<<endl; 
         }
         myfile.close();
         //cout<<g.edges();
@@ -62,7 +63,9 @@ if(argc==3)
           cout<<"8. DFS from a given vertex"<<endl;
           cout<<"9. InDegree of a given vertex"<<endl;
           cout<<"10. OutDegree of a given vertex"<<endl;
-          cout<<"11. Exit"<<endl<<"DirectedGraph << ";
+          cout<<"11. Prims MST"<<endl;
+          cout<<"12. Kruskal MST"<<endl;
+          cout<<"13. Exit"<<endl<<"DirectedGraph << ";
 
           cin>>c;
 
@@ -156,7 +159,14 @@ if(argc==3)
                   if(t1<g.vertices())
                   cout<<"\nThe OutDegree of vertex "<<t1<<" is "<<g.outdegree(t1)<<" ."<<endl<<endl;
                   break;
-            case 11:return 0;
+            case 11:g.prim();
+                    g.printMST();
+                  break;                  
+            case 12: g.kruskal();
+                     g.printMST();
+                  break;
+
+            case 13:return 0;
 
             default:cout<<"\nInvalid Choice\n"<<endl;
                   break;
@@ -168,19 +178,19 @@ if(argc==3)
   else if(argc==2)
   {
       char mode=argv[1][0];
-    	cout<<"Enter Number of Vertices : ";
-    	cin>>num;
-    	DirectedGraph g(num,mode);
-    	cout<<"Enter Adjacency Matrix \n ";
-    	for(int i=0;i<num;i++)
+      cout<<"Enter Number of Vertices : ";
+      cin>>num;
+      DirectedGraph g(num,mode);
+      cout<<"Enter Adjacency Matrix \n ";
+      for(int i=0;i<num;i++)
         {
         for(int j=0;j<num;j++)
             {
                 cin>>k;
                 if(k)
                  g.add(i,j,k);
-            }      	
-              		
+            }       
+                  
         }
         cout<<endl;
         g.print();
@@ -200,7 +210,9 @@ if(argc==3)
           cout<<"8. DFS from a given vertex"<<endl;
           cout<<"9. InDegree of a given vertex"<<endl;
           cout<<"10. OutDegree of a given vertex"<<endl;
-          cout<<"11. Exit"<<endl<<"DirectedGraph << ";
+          cout<<"11. Prims MST"<<endl;
+          cout<<"12. Kruskal MST"<<endl;
+          cout<<"13. Exit"<<endl<<"DirectedGraph << ";
 
           cin>>c;
 
@@ -291,14 +303,20 @@ if(argc==3)
                   if(t1<g.vertices())
                   cout<<"\nThe InDegree of vertex "<<t1<<" is "<<g.indegree(t1)<<" ."<<endl<<endl;
                   break;
-
             case 10:cout<<"\nEnter Vertex : ";
                   cin>>t1;
                   if(t1<g.vertices())
                   cout<<"\nThe OutDegree of vertex "<<t1<<" is "<<g.outdegree(t1)<<" ."<<endl<<endl;
                   break;
+            case 11:g.prim();
+                    g.printMST();
+                    break;                  
+            case 12:g.kruskal();
+                    g.printMST();
+                    break;
 
-            case 11:return 0;
+
+            case 13:return 0;
 
             default:cout<<"\nInvalid Choice\n"<<endl;
                   break;
@@ -307,5 +325,5 @@ if(argc==3)
 
 
   }
-	return 0;
+  return 0;
 }

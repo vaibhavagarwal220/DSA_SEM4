@@ -8,12 +8,14 @@
 #include "seqLinearList.hpp"
 
 using namespace std;
+using namespace cs202;
 
+ namespace cs202{
+ 	
  	template<class T>
  	class MinPriorityQueue{
  		// Primary container used in MinPriorityQueue
  		LinearList<T> heap;
-
  		int heap_size;
 
  		// heapifies the heap at position pos 
@@ -31,7 +33,6 @@ using namespace std;
  	public:
  		// default constructor
  		MinPriorityQueue();
- 		int findvert(int v);
 
  		// construct a heap from the elements of a seqLinearList
  		MinPriorityQueue(LinearList<T>& v);
@@ -56,7 +57,7 @@ using namespace std;
  		inline bool empty();
 
  		// heap_decrease_key function
- 		void heap_decrease_key(const size_t& pos,T val);
+ 		void heap_decrease_key(const size_t& pos);
 
  		void print();
  	};
@@ -119,7 +120,6 @@ using namespace std;
  	 	MinPriorityQueue<T>::MinPriorityQueue()
  	 	{
  	 		heap_size=0;
- 	 		(this->heap).resize(10000);
  	 	}
 
  		// construct a heap from the elements of a seqLinearList
@@ -127,7 +127,7 @@ using namespace std;
  		MinPriorityQueue<T>::MinPriorityQueue(LinearList<T>& v)
  	 	{
  	 		int n=v.size();
- 	 		(this->heap).resize(10000);
+
  	 		//if(n>heap.size()) heap.resize(n);
  	 		heap_size=0;
  	 		for(int i=0;i<n;i++)
@@ -138,19 +138,6 @@ using namespace std;
  	 		for(int i=(n-1)/2;i>=0;i--)
  	 			heapify(i);
  	 	}
-
- 	 	template<class T>
- 		int MinPriorityQueue<T>::findvert(int ver)
- 	 	{
- 	 		int i;
- 	 		for(i=0;i<heap_size;i++)
- 	 		{
- 	 			if((this->heap[i]).v == ver) break;
- 	 		}
- 	 		return i;
-
- 	 	}
-
  		// insert a value to the heap
  		template<class T>
  		void MinPriorityQueue<T>::insert(const T& a)
@@ -158,7 +145,7 @@ using namespace std;
  	 		
  	 		heap_size=heap_size+1;
  	 		heap[heap_size-1]=a;
- 	 		heap_decrease_key(heap_size-1,a);
+ 	 		heap_decrease_key(heap_size-1);
  	 		//this->print();
  	 	}
  		// get the minimum element from the heap
@@ -211,26 +198,27 @@ using namespace std;
  	 	}
  		// heap_decrease_key function
  		template<class T>
- 		void MinPriorityQueue<T>::heap_decrease_key(const size_t& pos,T val)
+ 		void MinPriorityQueue<T>::heap_decrease_key(const size_t& pos)
  	 	{
- 	 		heap[pos]=val;
  	 		int i=pos;
  	 		T tmp;
  	 		while(i>0&&heap[i]<heap[parent(i)])
  	 		{
- 	 			tmp=heap[parent(i)];
-				heap[parent(i)]=heap[i];
-				heap[i]=tmp;
+ 	 	// 		tmp=heap[parent(i)];
+				// heap[parent(i)]=heap[i];
+				// heap[i]=tmp;
+				swap(heap[parent(i)],heap[i]);
 				i=parent(i); 	 			
  	 		}
  	 	}
- 	 
+ 	 }
 
  	 		template<class T>
 		void MinPriorityQueue<T>::print()
 		{
-			cout<<endl;
+			//cout<<endl;
 			//cout<<heap_size;
+			cout<<"Heap\n";
 			for(int i=0;i<heap_size;i++)
 			{
 				cout<<" ["<<i<<"] "<<heap[i]<<endl;
